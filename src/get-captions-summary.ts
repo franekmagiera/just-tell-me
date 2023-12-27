@@ -17,11 +17,12 @@ function getCaptionsSummary(
   captions: string,
   summarizeCaptions: SummarizeCaptions,
 ): Promise<string> {
-  const sanitizedCaptions = stripXmlTags(captions);
-  const systemPrompt =
+  const SYSTEM_PROMPT =
     "You will be provided with video captions. Summarize the video in one paragraph.";
 
-  const summary = summarizeCaptions(systemPrompt, sanitizedCaptions);
+  const sanitizedCaptions = stripXmlTags(captions);
+
+  const summary = summarizeCaptions(SYSTEM_PROMPT, sanitizedCaptions);
   return summary;
 }
 
