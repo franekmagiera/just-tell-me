@@ -1,4 +1,6 @@
+import { FailureType, InternalFailure } from "./failure.ts";
 import { GetYoutubeCaptions } from "./get-youtube-video-summary.ts";
+import { createFailure, createOk, Ok, Result } from "./result.ts";
 
 // Just specifying whatever I'm going to use.
 interface CaptionsMetadata {
@@ -11,8 +13,12 @@ interface CaptionTrack {
   languageCode: string;
 }
 
-export type FetchYoutubeVideoData = (videoId: string) => Promise<string>;
-export type FetchYoutubeCaptions = (captionsUrl: string) => Promise<string>;
+export type FetchYoutubeVideoData = (
+  videoId: string,
+) => Promise<Ok<string> | InternalFailure>;
+export type FetchYoutubeCaptions = (
+  captionsUrl: string,
+) => Promise<Ok<string> | InternalFailure>;
 
 export function createGetYoutubeCaptions(
   fetchYoutubeVideoData: FetchYoutubeVideoData,
@@ -31,20 +37,31 @@ async function getYoutubeCaptions(
   videoId: string,
   fetchYoutubeVideoData: FetchYoutubeVideoData,
   fetchYoutubeCaptions: FetchYoutubeCaptions,
-): Promise<string> {
-  const youtubeVideoData = await fetchYoutubeVideoData(videoId);
-  const captionsMetadata = dereferenceCaptionsMetadata(youtubeVideoData);
-  const captionsUrl = captionsMetadata.captionTracks[0].baseUrl;
-  const captions = fetchYoutubeCaptions(captionsUrl);
-  return captions;
+): Promise<Ok<string> | InternalFailure> {
+  const fetchYoutubeVideoDataResult = await fetchYoutubeVideoData(videoId);
+  if (fetchYoutubeVideoDataResult.result === Result.Ok) {
+    const youtubeVideoData = fetchYoutubeVideoDataResult.data;
+    const dereferencingResult = dereferenceCaptionsMetadata(
+      youtubeVideoData,
+    );
+    if (dereferencingResult.result === Result.Ok) {
+      const captionsMetadata = dereferencingResult.data;
+      const captionsUrl = captionsMetadata.captionTracks[0].baseUrl;
+      const captions = fetchYoutubeCaptions(captionsUrl);
+      return captions;
+    } else {
+      // Couldn't dereference the captions, propagate the failure.
+      return dereferencingResult;
+    }
+  } else {
+    // Couldn't fetch youtube video data, propagate the failure.
+    return fetchYoutubeVideoDataResult;
+  }
 }
-
-// TODO: Create a base domain error?
-class CouldNotParseYoutubeDataError extends Error {}
 
 function dereferenceCaptionsMetadata(
   youtubeVideoData: string,
-): CaptionsMetadata {
+): Ok<CaptionsMetadata> | InternalFailure {
   // The response is a huge HTML that somewhere contains a JSON object that
   // is stored under the `playerCaptionsTracklistRenderer` key.
   // This function just searches for that key and tries to scan the JSON.
@@ -52,19 +69,25 @@ function dereferenceCaptionsMetadata(
 
   const captionsIndex = youtubeVideoData.indexOf(CAPTIONS_KEY);
   if (captionsIndex == -1) {
-    throw new CouldNotParseYoutubeDataError();
+    return createFailure(FailureType.FailedToParseYoutubeData);
   }
 
   const start = captionsIndex + CAPTIONS_KEY.length;
-  const end = findClosingBracket(youtubeVideoData, start);
-  const json = JSON.parse(youtubeVideoData.slice(start, end));
-  return json;
+  const closingBracketResult = findClosingBracket(youtubeVideoData, start);
+  if (closingBracketResult.result === Result.Ok) {
+    const end = closingBracketResult.data;
+    const json = JSON.parse(youtubeVideoData.slice(start, end));
+    return createOk(json);
+  }
+  return closingBracketResult;
 }
 
-function findClosingBracket(text: string, start: number): number {
-  // TODO: Think about using Options and Results instead of throwing.
+function findClosingBracket(
+  text: string,
+  start: number,
+): Ok<number> | InternalFailure {
   if (text[start] != "{") {
-    throw new CouldNotParseYoutubeDataError();
+    return createFailure(FailureType.FailedToParseYoutubeData);
   }
 
   let index = start + 1;
@@ -81,8 +104,8 @@ function findClosingBracket(text: string, start: number): number {
   }
 
   if (depth != 0) {
-    throw new CouldNotParseYoutubeDataError();
+    return createFailure(FailureType.FailedToParseYoutubeData);
   }
 
-  return index;
+  return createOk(index);
 }

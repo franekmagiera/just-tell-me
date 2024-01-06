@@ -1,9 +1,11 @@
+import { InternalFailure } from "./failure.ts";
 import { GetCaptionsSummary } from "./get-youtube-video-summary.ts";
+import { Ok } from "./result.ts";
 
 export type SummarizeCaptions = (
   systemPrompt: string,
   captions: string,
-) => Promise<string>;
+) => Promise<Ok<string> | InternalFailure>;
 
 export function createGetCaptionsSummary(
   summarizeCaptions: SummarizeCaptions,
@@ -16,7 +18,7 @@ export function createGetCaptionsSummary(
 function getCaptionsSummary(
   captions: string,
   summarizeCaptions: SummarizeCaptions,
-): Promise<string> {
+): Promise<Ok<string> | InternalFailure> {
   const SYSTEM_PROMPT =
     "You will be provided with video captions. Summarize the video in one paragraph.";
 

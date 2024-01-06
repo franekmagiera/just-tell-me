@@ -1,18 +1,34 @@
+import { FailureType, InternalFailure } from "./failure.ts";
 import {
   FetchYoutubeCaptions,
   FetchYoutubeVideoData,
 } from "./get-youtube-captions.ts";
+import { createFailure, createOk, Ok } from "./result.ts";
 
 export const fetchYoutubeVideoData: FetchYoutubeVideoData = async (
   videoId: string,
-): Promise<string> => {
+): Promise<Ok<string> | InternalFailure> => {
   const response = await fetch(`https://youtube.com/watch?v=${videoId}`);
-  return response.text();
+  if (response.ok) {
+    const text = await response.text();
+    return createOk(text);
+  }
+  if (response.status === 404) {
+    return createFailure(FailureType.CouldNotFindTheVideo);
+  }
+  return createFailure(FailureType.FailedToFetch);
 };
 
 export const fetchYoutubeCaptions: FetchYoutubeCaptions = async (
   captionsUrl: string,
-): Promise<string> => {
+): Promise<Ok<string> | InternalFailure> => {
   const response = await fetch(captionsUrl);
-  return response.text();
+  if (response.ok) {
+    const text = await response.text();
+    return createOk(text);
+  }
+  if (response.status === 404) {
+    return createFailure(FailureType.CouldNotFindTheCaptions);
+  }
+  return createFailure(FailureType.FailedToFetch);
 };
