@@ -36,11 +36,16 @@ function stripXmlTags(text: string): string {
 
   chars.forEach((char, index) => {
     if (char === "<") {
-      resultingText += text.slice(start, index);
+      resultingText += text.slice(start, index) + " ";
     } else if (char === ">") {
       start = index + 1;
     }
   });
 
-  return resultingText;
+  if (start === 0) {
+    // Most likely it wasn't an XML, so just return the input then.
+    return text;
+  }
+
+  return resultingText.trim().replace(/\s\s+/g, " ");
 }

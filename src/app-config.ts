@@ -24,7 +24,7 @@ export interface AppConfig {
   getYoutubeVideoSummary: GetYoutubeVideoSummary;
 }
 
-function bootstrapGetYoutubeVideoSummary(
+export function bootstrapGetYoutubeVideoSummary(
   fetchYoutubeVideoData: FetchYoutubeVideoData,
   fetchYoutubeCaptions: FetchYoutubeCaptions,
   summarizeCaptions: SummarizeCaptions,

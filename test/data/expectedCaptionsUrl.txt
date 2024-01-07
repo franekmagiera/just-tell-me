@@ -1,0 +1,1 @@
+https://www.youtube.com/api/timedtext?v=dQw4w9WgXcQ&ei=xeuaZb6EGceki9oPpfaKgAs&caps=asr&opi=112496729&xoaf=5&hl=pl&ip=0.0.0.0&ipbits=0&expire=1704676917&sparams=ip,ipbits,expire,v,ei,caps,opi,xoaf&signature=A7BEA9EFEA4FC273F38A25D85737D7D6217123A5.7ECDD435979CB04D6545EC4AC24EFE6204EF28E4&key=yt8&kind=asr&lang=en
