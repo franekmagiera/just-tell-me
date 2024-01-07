@@ -1,4 +1,5 @@
 import { ProdAppConfig } from "./app-config.ts";
+import { Result } from "./result.ts";
 
 async function main() {
   const argument = Deno.args[0];
@@ -13,7 +14,12 @@ async function main() {
   const appConfig = new ProdAppConfig();
   const summary = await appConfig.getYoutubeVideoSummary(videoId);
 
-  console.log(summary);
+  if (summary.result == Result.Ok) {
+    console.log(summary.data);
+  } else {
+    console.log("Sorry, something went wrong:");
+    console.log(summary.failure);
+  }
 }
 
 main();
