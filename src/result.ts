@@ -17,9 +17,11 @@ export const createOk = <T>(data: T): Ok<T> => ({
 export type Failure<T> = {
   result: Result.Failure;
   failure: T;
+  message?: string;
 };
 
-export const createFailure = <T>(failure: T): Failure<T> => ({
+export const createFailure = <T>(failure: T, message?: string): Failure<T> => ({
   result: Result.Failure,
   failure,
+  message,
 });
