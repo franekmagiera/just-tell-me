@@ -18,7 +18,12 @@ import {
   GetYoutubeCaptions,
   GetYoutubeVideoSummary,
 } from "../src/get-youtube-video-summary.ts";
-import { createSummarizeCaptionsWithChatGpt } from "../src/summarize-captions-with-chat-gpt.ts";
+import {
+  ChatGptClientCreationError,
+  createSummarizeCaptionsWithChatGpt,
+  GptModel,
+} from "../src/summarize-captions-with-chat-gpt.ts";
+import { createOk, Failure, Ok, Result } from "./result.ts";
 
 export interface AppConfig {
   getYoutubeVideoSummary: GetYoutubeVideoSummary;
@@ -40,17 +45,31 @@ export function bootstrapGetYoutubeVideoSummary(
 }
 
 export class ProdAppConfig implements AppConfig {
-  getYoutubeVideoSummary: GetYoutubeVideoSummary;
+  readonly getYoutubeVideoSummary: GetYoutubeVideoSummary;
+  private chatGptClient: OpenAI;
 
-  constructor() {
-    const chatGptClient = new OpenAI({
+  private constructor(gptModel: GptModel) {
+    this.chatGptClient = new OpenAI({
       apiKey: Deno.env.get("OPENAI_API_KEY"),
     });
 
     this.getYoutubeVideoSummary = bootstrapGetYoutubeVideoSummary(
       fetchYoutubeVideoData,
       fetchYoutubeCaptions,
-      createSummarizeCaptionsWithChatGpt(chatGptClient),
+      createSummarizeCaptionsWithChatGpt(this.chatGptClient, gptModel),
     );
+  }
+
+  static create(
+    desiredGptModel?: string,
+  ): Ok<AppConfig> | Failure<ChatGptClientCreationError> {
+    const gptModelResult = GptModel.createGptModel(
+      desiredGptModel || "gpt-3.5-turbo-1106",
+    );
+    if (gptModelResult.result === Result.Ok) {
+      return createOk(new ProdAppConfig(gptModelResult.data));
+    } else {
+      return gptModelResult;
+    }
   }
 }

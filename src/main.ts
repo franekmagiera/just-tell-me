@@ -1,5 +1,6 @@
 import { ProdAppConfig } from "./app-config.ts";
 import { Result } from "./result.ts";
+import { parseArgs } from "https://deno.land/std@0.207.0/cli/parse_args.ts";
 
 async function main() {
   const argument = Deno.args[0];
@@ -8,17 +9,27 @@ async function main() {
     console.log("This script expects a YouTube video id");
     return;
   }
-
   const videoId: string = argument;
 
-  const appConfig = new ProdAppConfig();
-  const summary = await appConfig.getYoutubeVideoSummary(videoId);
+  const flags = parseArgs(Deno.args, {
+    string: ["model"],
+  });
 
-  if (summary.result == Result.Ok) {
-    console.log(summary.data);
+  const appConfigResult = ProdAppConfig.create(flags.model);
+  if (appConfigResult.result == Result.Failure) {
+    console.log(appConfigResult.failure, "\n", appConfigResult.message);
   } else {
-    console.log("Sorry, something went wrong:");
-    console.log(summary.failure);
+    const appConfig = appConfigResult.data;
+    const summaryResult = await appConfig.getYoutubeVideoSummary(videoId);
+    if (summaryResult.result == Result.Ok) {
+      console.log(summaryResult.data);
+    } else {
+      console.log(
+        summaryResult.failure,
+        "\n",
+        summaryResult.message,
+      );
+    }
   }
 }
 
