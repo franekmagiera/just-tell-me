@@ -69,7 +69,10 @@ function dereferenceCaptionsMetadata(
 
   const captionsIndex = youtubeVideoData.indexOf(CAPTIONS_KEY);
   if (captionsIndex == -1) {
-    return createFailure(FailureType.FailedToParseYoutubeData);
+    return createFailure(
+      FailureType.FailedToParseYoutubeData,
+      "Probably either the video or captions do not exist.",
+    );
   }
 
   const start = captionsIndex + CAPTIONS_KEY.length;

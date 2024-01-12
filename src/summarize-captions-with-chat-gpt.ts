@@ -1,4 +1,4 @@
-import OpenAI from "https://deno.land/x/openai@v4.24.1/mod.ts";
+import OpenAI, { APIError } from "https://deno.land/x/openai@v4.24.1/mod.ts";
 import { SummarizeCaptions } from "./get-captions-summary.ts";
 import { FailureType, InternalFailure } from "./failure.ts";
 import { createFailure, createOk, Failure, Ok } from "./result.ts";
@@ -61,19 +61,32 @@ async function summarizeCaptionsWithChatGpt(
   chatGptClient: OpenAI,
   gptModel: GptModel,
 ): Promise<Ok<string> | InternalFailure> {
-  const result = await chatGptClient.chat.completions.create({
-    model: gptModel.model,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: captions },
-    ],
-    n: 1,
-  });
+  try {
+    const result = await chatGptClient.chat.completions.create({
+      model: gptModel.model,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: captions },
+      ],
+      n: 1,
+    });
 
-  const content = result.choices[0].message.content;
+    const content = result.choices[0].message.content;
 
-  if (content === null) {
+    if (content === null) {
+      return createFailure(
+        FailureType.FailedToSummarizeTheVideo,
+        "The summary was empty.",
+      );
+    }
+    return createOk(content);
+  } catch (error) {
+    if (error instanceof APIError) {
+      return createFailure(
+        FailureType.FailedToSummarizeTheVideo,
+        error.code || "",
+      );
+    }
     return createFailure(FailureType.FailedToSummarizeTheVideo);
   }
-  return createOk(content);
 }
