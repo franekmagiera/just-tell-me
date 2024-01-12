@@ -16,7 +16,7 @@ export const fetchYoutubeVideoData: FetchYoutubeVideoData = async (
   if (response.status === 404) {
     return createFailure(FailureType.CouldNotFindTheVideo);
   }
-  return createFailure(FailureType.FailedToFetch);
+  return createFailure(FailureType.FailedToFetch, response.statusText);
 };
 
 export const fetchYoutubeCaptions: FetchYoutubeCaptions = async (
@@ -30,5 +30,5 @@ export const fetchYoutubeCaptions: FetchYoutubeCaptions = async (
   if (response.status === 404) {
     return createFailure(FailureType.CouldNotFindTheCaptions);
   }
-  return createFailure(FailureType.FailedToFetch);
+  return createFailure(FailureType.FailedToFetch, response.statusText);
 };
