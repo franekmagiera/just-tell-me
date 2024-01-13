@@ -2,7 +2,7 @@ import { ProdAppConfig } from "./app-config.ts";
 import { Result } from "./result.ts";
 import { parseArgs } from "https://deno.land/std@0.207.0/cli/parse_args.ts";
 
-async function main() {
+async function run() {
   const argument = Deno.args[0];
 
   if (argument === undefined) {
@@ -33,4 +33,4 @@ async function main() {
   }
 }
 
-main();
+run();
