@@ -30,7 +30,9 @@ Deno.test("should get youtube video summary", async () => {
   assertEquals(result, createOk(SUCCESSFUL_CHAT_GPT_CAPTIONS_SUMMARY));
 });
 
-const createTestGetYoutubeVideoSummaryForVideoId = async (videoId: string) => {
+export const createTestGetYoutubeVideoSummaryForVideoId = async (
+  videoId: string,
+) => {
   const textDecoder = new TextDecoder("utf-8");
 
   const SUCCESSFUL_YOUTUBE_DATA_RESPONSE_PATH =

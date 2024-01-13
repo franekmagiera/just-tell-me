@@ -24,6 +24,7 @@ import {
   GptModel,
 } from "./summarize-captions-with-chat-gpt.ts";
 import { createOk, Failure, Ok, Result } from "./result.ts";
+import { createTestGetYoutubeVideoSummaryForVideoId } from "../test/get-youtube-video-summary.test.ts";
 
 export interface AppConfig {
   getYoutubeVideoSummary: GetYoutubeVideoSummary;
@@ -71,5 +72,19 @@ export class ProdAppConfig implements AppConfig {
     } else {
       return gptModelResult;
     }
+  }
+}
+
+export class TestAppConfig implements AppConfig {
+  readonly getYoutubeVideoSummary: GetYoutubeVideoSummary;
+
+  private constructor(getYoutubeVideoSummary: GetYoutubeVideoSummary) {
+    this.getYoutubeVideoSummary = getYoutubeVideoSummary;
+  }
+
+  static async createForVideoId(videoId: string): Promise<AppConfig> {
+    return new TestAppConfig(
+      await createTestGetYoutubeVideoSummaryForVideoId(videoId),
+    );
   }
 }
