@@ -34,7 +34,7 @@ const createTestGetYoutubeVideoSummaryForVideoId = async (videoId: string) => {
   const textDecoder = new TextDecoder("utf-8");
 
   const SUCCESSFUL_YOUTUBE_DATA_RESPONSE_PATH =
-    "./test/data/successfulYoutubeDataResponse.html";
+    "./app/test/data/successfulYoutubeDataResponse.html";
   const successfulYoutubeDataResponse = textDecoder.decode(
     await Deno.readFile(SUCCESSFUL_YOUTUBE_DATA_RESPONSE_PATH),
   );
@@ -43,12 +43,12 @@ const createTestGetYoutubeVideoSummaryForVideoId = async (videoId: string) => {
     successfulYoutubeDataResponse,
   );
 
-  const EXPECTED_CAPTIONS_URL_PATH = "./test/data/expectedCaptionsUrl.txt";
+  const EXPECTED_CAPTIONS_URL_PATH = "./app/test/data/expectedCaptionsUrl.txt";
   const expectedCaptionsUrl = textDecoder.decode(
     await Deno.readFile(EXPECTED_CAPTIONS_URL_PATH),
   );
   const SUCCESSFUL_YOUTUBE_CAPTIONS_RESPONSE_PATH =
-    "./test/data/successfulYoutubeCaptionsResponse.xml";
+    "./app/test/data/successfulYoutubeCaptionsResponse.xml";
   const successfulYoutubeCaptionsResponse = textDecoder.decode(
     await Deno.readFile(SUCCESSFUL_YOUTUBE_CAPTIONS_RESPONSE_PATH),
   );

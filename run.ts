@@ -1,5 +1,6 @@
-import { ProdAppConfig } from "./src/app-config.ts";
-import { Result } from "./src/result.ts";
+// Entrypoint to run "just tell me" from the command line interface.
+import { ProdAppConfig } from "./app/src/app-config.ts";
+import { Result } from "./app/src/result.ts";
 import { parseArgs } from "https://deno.land/std@0.207.0/cli/parse_args.ts";
 
 async function run() {
