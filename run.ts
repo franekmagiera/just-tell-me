@@ -1,5 +1,5 @@
-import { ProdAppConfig } from "./app-config.ts";
-import { Result } from "./result.ts";
+import { ProdAppConfig } from "./src/app-config.ts";
+import { Result } from "./src/result.ts";
 import { parseArgs } from "https://deno.land/std@0.207.0/cli/parse_args.ts";
 
 async function run() {
