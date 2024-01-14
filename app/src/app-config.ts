@@ -67,10 +67,10 @@ export class ProdAppConfig implements AppConfig {
     const gptModelResult = GptModel.createGptModel(
       desiredGptModel || "gpt-3.5-turbo-1106",
     );
-    if (gptModelResult.result === Result.Ok) {
-      return createOk(new ProdAppConfig(gptModelResult.data));
-    } else {
+    if (gptModelResult.result === Result.Failure) {
       return gptModelResult;
+    } else {
+      return createOk(new ProdAppConfig(gptModelResult.data));
     }
   }
 }

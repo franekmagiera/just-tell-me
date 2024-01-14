@@ -17,19 +17,19 @@ async function run() {
   });
 
   const appConfigResult = ProdAppConfig.create(flags.model);
-  if (appConfigResult.result == Result.Failure) {
+  if (appConfigResult.result === Result.Failure) {
     console.log(appConfigResult.failure, "\n", appConfigResult.message);
   } else {
     const appConfig = appConfigResult.data;
     const summaryResult = await appConfig.getYoutubeVideoSummary(videoId);
-    if (summaryResult.result == Result.Ok) {
-      console.log(summaryResult.data);
-    } else {
+    if (summaryResult.result === Result.Failure) {
       console.log(
         summaryResult.failure,
         "\n",
         summaryResult.message,
       );
+    } else {
+      console.log(summaryResult.data);
     }
   }
 }

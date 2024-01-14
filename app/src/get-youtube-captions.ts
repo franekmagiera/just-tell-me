@@ -39,24 +39,22 @@ async function getYoutubeCaptions(
   fetchYoutubeCaptions: FetchYoutubeCaptions,
 ): Promise<Ok<string> | InternalFailure> {
   const fetchYoutubeVideoDataResult = await fetchYoutubeVideoData(videoId);
-  if (fetchYoutubeVideoDataResult.result === Result.Ok) {
-    const youtubeVideoData = fetchYoutubeVideoDataResult.data;
-    const dereferencingResult = dereferenceCaptionsMetadata(
-      youtubeVideoData,
-    );
-    if (dereferencingResult.result === Result.Ok) {
-      const captionsMetadata = dereferencingResult.data;
-      const captionsUrl = captionsMetadata.captionTracks[0].baseUrl;
-      const captions = fetchYoutubeCaptions(captionsUrl);
-      return captions;
-    } else {
-      // Couldn't dereference the captions, propagate the failure.
-      return dereferencingResult;
-    }
-  } else {
+  if (fetchYoutubeVideoDataResult.result === Result.Failure) {
     // Couldn't fetch youtube video data, propagate the failure.
     return fetchYoutubeVideoDataResult;
   }
+  const youtubeVideoData = fetchYoutubeVideoDataResult.data;
+  const dereferencingResult = dereferenceCaptionsMetadata(
+    youtubeVideoData,
+  );
+  if (dereferencingResult.result === Result.Failure) {
+    // Couldn't dereference the captions, propagate the failure.
+    return dereferencingResult;
+  }
+  const captionsMetadata = dereferencingResult.data;
+  const captionsUrl = captionsMetadata.captionTracks[0].baseUrl;
+  const captions = fetchYoutubeCaptions(captionsUrl);
+  return captions;
 }
 
 function dereferenceCaptionsMetadata(
@@ -68,7 +66,7 @@ function dereferenceCaptionsMetadata(
   const CAPTIONS_KEY = '"playerCaptionsTracklistRenderer":';
 
   const captionsIndex = youtubeVideoData.indexOf(CAPTIONS_KEY);
-  if (captionsIndex == -1) {
+  if (captionsIndex === -1) {
     return createFailure(
       FailureType.FailedToParseYoutubeData,
       "Probably either the video or captions do not exist.",
@@ -77,12 +75,12 @@ function dereferenceCaptionsMetadata(
 
   const start = captionsIndex + CAPTIONS_KEY.length;
   const closingBracketResult = findClosingBracket(youtubeVideoData, start);
-  if (closingBracketResult.result === Result.Ok) {
-    const end = closingBracketResult.data;
-    const json = JSON.parse(youtubeVideoData.slice(start, end));
-    return createOk(json);
+  if (closingBracketResult.result === Result.Failure) {
+    return closingBracketResult;
   }
-  return closingBracketResult;
+  const end = closingBracketResult.data;
+  const json = JSON.parse(youtubeVideoData.slice(start, end));
+  return createOk(json);
 }
 
 function findClosingBracket(
@@ -97,10 +95,10 @@ function findClosingBracket(
   let depth = 1;
 
   while (depth != 0 && index < text.length) {
-    if (text[index] == "{") {
+    if (text[index] === "{") {
       depth += 1;
     }
-    if (text[index] == "}") {
+    if (text[index] === "}") {
       depth -= 1;
     }
     index += 1;

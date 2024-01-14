@@ -13,7 +13,7 @@ export const handler: Handlers = {
   ) {
     const videoId = new URL(req.url).searchParams.get("id") || "";
     const appResult = ProdAppConfig.create();
-    if (appResult.result == Result.Failure) {
+    if (appResult.result === Result.Failure) {
       return ctx.render(appResult);
     }
     const app = appResult.data;
@@ -25,12 +25,12 @@ export const handler: Handlers = {
 export default function YoutubeVideoSummary(
   props: PageProps<Ok<string> | InternalFailure>,
 ) {
-  if (props.data.result == Result.Ok) {
-    return Summary(props.data.data);
+  if (props.data.result === Result.Failure) {
+    return ErrorPage(
+      "Something went wrong",
+      props.data.message || "",
+      props.data.failure,
+    );
   }
-  return ErrorPage(
-    "Something went wrong",
-    props.data.message || "",
-    props.data.failure,
-  );
+  return Summary(props.data.data);
 }
