@@ -82,9 +82,19 @@ export class TestAppConfig implements AppConfig {
     this.getYoutubeVideoSummary = getYoutubeVideoSummary;
   }
 
-  static async createForVideoId(videoId: string): Promise<AppConfig> {
-    return new TestAppConfig(
-      await createTestGetYoutubeVideoSummaryForVideoId(videoId),
+  static async createForVideoId(videoId: string): Promise<Ok<AppConfig>> {
+    return createOk(
+      new TestAppConfig(
+        await createTestGetYoutubeVideoSummaryForVideoId(videoId),
+      ),
     );
   }
+}
+
+export const TEST_CONFIG_VIDEO_ID = "test";
+
+export function getAppConfig(desiredGptModel?: string) {
+  return Deno.env.get("TEST") === "true"
+    ? TestAppConfig.createForVideoId(TEST_CONFIG_VIDEO_ID)
+    : ProdAppConfig.create(desiredGptModel);
 }

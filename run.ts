@@ -1,5 +1,5 @@
 // Entrypoint to run "just tell me" from the command line interface.
-import { ProdAppConfig } from "./app/src/app-config.ts";
+import { getAppConfig } from "./app/src/app-config.ts";
 import { Result } from "./app/src/result.ts";
 import { parseArgs } from "https://deno.land/std@0.207.0/cli/parse_args.ts";
 
@@ -16,7 +16,7 @@ async function run() {
     string: ["model"],
   });
 
-  const appConfigResult = ProdAppConfig.create(flags.model);
+  const appConfigResult = await getAppConfig(flags.model);
   if (appConfigResult.result === Result.Failure) {
     console.log(appConfigResult.failure, "\n", appConfigResult.message);
   } else {

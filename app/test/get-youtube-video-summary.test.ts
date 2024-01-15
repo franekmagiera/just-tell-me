@@ -9,7 +9,7 @@ import { createFailure, createOk } from "../src/result.ts";
 import { assertEquals } from "https://deno.land/std@0.211.0/assert/mod.ts";
 import { createPromise } from "./common.ts";
 
-const SUCCESSFUL_CHAT_GPT_CAPTIONS_SUMMARY =
+export const SUCCESSFUL_CHAT_GPT_CAPTIONS_SUMMARY =
   `The video is a music video for the song "Never Gonna Give You Up" by Rick
   Astley. The captions display the lyrics of the song, which talk about love
   and commitment, assuring that the singer will never give up on the person
