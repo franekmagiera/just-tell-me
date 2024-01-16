@@ -10,7 +10,7 @@ export default function Home() {
       <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
         <form action="/summary/youtube">
           <Label htmlFor="youtube-video-id">
-            Video ID
+            Video ID or URL
           </Label>
           <Input
             id="youtube-video-id"
