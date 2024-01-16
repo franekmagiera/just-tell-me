@@ -11,7 +11,8 @@ export const handler: Handlers = {
     req: Request,
     ctx: FreshContext,
   ) {
-    const videoId = new URL(req.url).searchParams.get("id") || "";
+    const idParamValue = new URL(req.url).searchParams.get("id") || "";
+    const videoId = dereferenceVideoIdFromUrlPath(idParamValue);
     const appResult = await getAppConfig();
     if (appResult.result === Result.Failure) {
       return ctx.render(appResult);
@@ -33,4 +34,43 @@ export default function YoutubeVideoSummary(
     );
   }
   return Summary(props.data.data);
+}
+
+function dereferenceVideoIdFromUrlPath(idParamValue: string) {
+  // I want this to work even if someone pastes an incorrect URL, so I'm not
+  // using the URL classes and I'm trying to parse the youtube video id by
+  // hand.
+  let idStartIndex = -1;
+
+  if (idParamValue.includes("youtube.com")) {
+    const vKeyId = idParamValue.indexOf("v=");
+    if (vKeyId != -1) {
+      idStartIndex = vKeyId + "v=".length;
+    } else {
+      // Just give up, I can't dereference this, so let's try with user's
+      // input.
+      return idParamValue;
+    }
+  } else if (idParamValue.includes("youtu.be/")) {
+    idStartIndex = idParamValue.indexOf("youtu.be/") + "youtu.be/".length;
+  }
+
+  if (idStartIndex != -1) {
+    let idEndIndex = idStartIndex + 1;
+    while (
+      idEndIndex < idParamValue.length &&
+      !isWhitespace(idParamValue[idEndIndex]) &&
+      idParamValue[idEndIndex] != "&" &&
+      idParamValue[idEndIndex] != "?"
+    ) {
+      idEndIndex++;
+    }
+    return idParamValue.slice(idStartIndex, idEndIndex);
+  }
+
+  return idParamValue;
+}
+
+function isWhitespace(char: string) {
+  return /\s/.test(char);
 }
