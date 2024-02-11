@@ -22,13 +22,7 @@ async function run() {
   } else {
     const appConfig = appConfigResult.data;
     const summaryResult = await appConfig.getYoutubeVideoSummary(videoId);
-    if (summaryResult.result === Result.Failure) {
-      console.log(
-        summaryResult.failure,
-        "\n",
-        summaryResult.message,
-      );
-    } else {
+    if (summaryResult.result === Result.Ok) {
       console.log(summaryResult.data);
     }
   }

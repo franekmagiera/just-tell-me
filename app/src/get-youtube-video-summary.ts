@@ -31,10 +31,20 @@ async function getYoutubeVideoSummary(
 ): Promise<Ok<string> | InternalFailure> {
   const getYoutubeCaptionsResult = await getYoutubeCaptions(videoId);
   if (getYoutubeCaptionsResult.result === Result.Failure) {
+    console.error(
+      getYoutubeCaptionsResult.failure,
+      getYoutubeCaptionsResult.message || "",
+    );
     // Couldn't get youtube captions, propagate the failure.
     return getYoutubeCaptionsResult;
   }
   const captions = getYoutubeCaptionsResult.data;
-  const summary = getCaptionsSummary(captions);
+  const summary = await getCaptionsSummary(captions);
+  if (summary.result === Result.Failure) {
+    console.error(
+      summary.failure,
+      summary.message || "",
+    );
+  }
   return summary;
 }
