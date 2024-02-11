@@ -1,0 +1,29 @@
+name: Test
+on: 
+  push:
+    branches: [main]
+  pull_request:
+    branches: main
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.39.4
+
+      - name: Check formatting
+        run: "deno fmt --check"
+      
+      - name: Lint
+        run: "deno lint"
+      
+      - name: Test
+        run: "deno task test"
