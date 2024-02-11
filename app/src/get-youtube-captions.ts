@@ -69,7 +69,7 @@ function dereferenceCaptionsMetadata(
   if (captionsIndex === -1) {
     return createFailure(
       FailureType.FailedToParseYoutubeData,
-      "Probably either the video or captions do not exist.",
+      "Looks like the video does not have any captions.",
     );
   }
 

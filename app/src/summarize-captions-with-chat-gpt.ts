@@ -84,7 +84,7 @@ async function summarizeCaptionsWithChatGpt(
     if (error instanceof APIError) {
       return createFailure(
         FailureType.FailedToSummarizeTheVideo,
-        error.code || "",
+        `Downstream service error ${error.code} ${error.message}` || "",
       );
     }
     return createFailure(FailureType.FailedToSummarizeTheVideo);
