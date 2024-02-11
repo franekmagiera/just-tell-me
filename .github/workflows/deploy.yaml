@@ -1,16 +1,12 @@
 name: Deploy
 on:
-  workflow_run:
-    workflows: [Test]
+  push:
     branches: [main]
-    types: [completed]
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     permissions:
       id-token: write # Needed for auth with Deno Deploy
@@ -24,6 +20,15 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.39.4
+ 
+      - name: Check formatting
+        run: "deno fmt --check"
+
+      - name: Lint
+        run: "deno lint"
+
+      - name: Test
+        run: "deno task test"
 
       - name: Build step
         run: "deno task build"
