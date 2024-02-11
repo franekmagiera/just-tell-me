@@ -1,4 +1,4 @@
-import OpenAI, { APIError } from "https://deno.land/x/openai@v4.24.1/mod.ts";
+import { APIError, OpenAI } from "../deps.ts";
 import { SummarizeCaptions } from "./get-captions-summary.ts";
 import { FailureType, InternalFailure } from "./failure.ts";
 import { createFailure, createOk, Failure, Ok } from "./result.ts";
