@@ -31,7 +31,7 @@ async function getYoutubeVideoSummary(
 ): Promise<Ok<string> | InternalFailure> {
   const getYoutubeCaptionsResult = await getYoutubeCaptions(videoId);
   if (getYoutubeCaptionsResult.result === Result.Failure) {
-    console.error({
+    console.info({
       errorType: getYoutubeCaptionsResult.failure,
       errorMessage: getYoutubeCaptionsResult.message || "",
     });
@@ -41,7 +41,7 @@ async function getYoutubeVideoSummary(
   const captions = getYoutubeCaptionsResult.data;
   const summary = await getCaptionsSummary(captions);
   if (summary.result === Result.Failure) {
-    console.error({
+    console.info({
       errorType: summary.failure,
       errorMessage: summary.message || "",
     });
