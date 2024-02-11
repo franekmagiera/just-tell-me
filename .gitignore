@@ -11,3 +11,5 @@ TODO.md
 _fresh/
 # npm dependencies
 node_modules/
+
+cov/
