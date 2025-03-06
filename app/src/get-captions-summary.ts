@@ -19,8 +19,7 @@ function getCaptionsSummary(
   captions: string,
   summarizeCaptions: SummarizeCaptions,
 ): Promise<Ok<string> | InternalFailure> {
-  const SYSTEM_PROMPT =
-    `You will be provided with video captions.
+  const SYSTEM_PROMPT = `You will be provided with video captions.
 	Summarize the video underlining the most important themes.
 	Try to keep it as short as possible without loosing context.
 	Ignore sponsored segments.

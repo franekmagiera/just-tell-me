@@ -20,7 +20,7 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.39.4
- 
+
       - name: Check formatting
         run: "deno fmt --check"
 
