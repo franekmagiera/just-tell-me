@@ -20,7 +20,11 @@ function getCaptionsSummary(
   summarizeCaptions: SummarizeCaptions,
 ): Promise<Ok<string> | InternalFailure> {
   const SYSTEM_PROMPT =
-    "You will be provided with video captions. Summarize the video in one paragraph.";
+    `You will be provided with video captions.
+	Summarize the video underlining the most important themes.
+	Try to keep it as short as possible without loosing context.
+	Ignore sponsored segments.
+	Ignore mentions of Patreon and calls to subscribe, like and comment.`;
 
   const sanitizedCaptions = stripXmlTags(captions);
 
