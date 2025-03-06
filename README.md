@@ -36,8 +36,10 @@ deno run -A run.ts youtubeVideoId
 The program relies on OpenAI API for ChatGPT and requires a `OPENAI_API_KEY`
 environment variable that contains a valid OpenAI API key.
 
-By default, the app uses the `gpt-3.5-turbo-1106` model, but you can also use
-`gpt-4` and `gpt-4-1106-preview`, by including a `--model=gpt-4` flag.
+By default, the app uses the `gpt-4o-mini-2024-07-18` model, but you can also
+use other models, like `gpt-4` and `gpt-4-1106-preview`, by including a
+`--model=gpt-4` flag. All available models are listed in
+`app/src/summarize-captions-with-chat-gpt.ts`.
 
 Optionally, you can run the app in test mode (only `test` is considered a valid
 video id then) with:

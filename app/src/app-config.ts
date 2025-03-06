@@ -65,7 +65,7 @@ export class ProdAppConfig implements AppConfig {
     desiredGptModel?: string,
   ): Ok<AppConfig> | Failure<ChatGptClientCreationError> {
     const gptModelResult = GptModel.createGptModel(
-      desiredGptModel || "gpt-3.5-turbo-1106",
+      desiredGptModel || "gpt-4o-mini-2024-07-18",
     );
     if (gptModelResult.result === Result.Failure) {
       return gptModelResult;

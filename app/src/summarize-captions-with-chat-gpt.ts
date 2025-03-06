@@ -12,6 +12,7 @@ export class GptModel {
     "gpt-4-1106-preview",
     "gpt-4",
     "gpt-3.5-turbo-1106",
+    "gpt-4o-mini-2024-07-18"
   ]);
 
   private readonly _model: string;
