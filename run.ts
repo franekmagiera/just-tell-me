@@ -24,6 +24,8 @@ async function run() {
     const summaryResult = await appConfig.getYoutubeVideoSummary(videoId);
     if (summaryResult.result === Result.Ok) {
       console.log(summaryResult.data);
+    } else {
+      console.error(summaryResult);
     }
   }
 }

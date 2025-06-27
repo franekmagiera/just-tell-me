@@ -1,5 +1,5 @@
-import { InternalFailure } from "./failure.ts";
-import { Ok, Result } from "./result.ts";
+import { FailureType, InternalFailure } from "./failure.ts";
+import { createFailure, Ok, Result } from "./result.ts";
 
 export type GetYoutubeVideoSummary = (
   videoId: string,
@@ -39,6 +39,9 @@ async function getYoutubeVideoSummary(
     return getYoutubeCaptionsResult;
   }
   const captions = getYoutubeCaptionsResult.data;
+  if (!captions) {
+    return createFailure(FailureType.EmptyCaptions);
+  }
   const summary = await getCaptionsSummary(captions);
   if (summary.result === Result.Failure) {
     console.info({
