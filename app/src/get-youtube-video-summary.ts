@@ -40,7 +40,10 @@ async function getYoutubeVideoSummary(
   }
   const captions = getYoutubeCaptionsResult.data;
   if (!captions) {
-    return createFailure(FailureType.EmptyCaptions);
+    return createFailure(
+      FailureType.EmptyCaptions,
+      "Fetched captions are empty.",
+    );
   }
   const summary = await getCaptionsSummary(captions);
   if (summary.result === Result.Failure) {
