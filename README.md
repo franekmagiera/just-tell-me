@@ -1,3 +1,8 @@
+**WARNING:** This project is no longer maintained. I took down the deployment
+as well. Keeping up with the quirks of getting the video captions has become
+too much effort for me (especially that the main goal of this project was to
+play around with Deno and Fresh).
+
 # Just Tell Me!
 
 <a href="https://fresh.deno.dev">
